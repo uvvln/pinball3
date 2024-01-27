@@ -7,7 +7,7 @@ class Game():
         pygame.init()
         self.running, self.playing = True, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
-        self.DISPLAY_W, self.DISPLAY_H =600, 800
+        self.DISPLAY_W, self.DISPLAY_H =600, 750
         self.display = pygame.Surface((self.DISPLAY_W,self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W,self.DISPLAY_H)))
         pygame.display.set_caption("Pinnball")
@@ -24,7 +24,9 @@ class Game():
             if self.START_KEY:
                 self.playing= False
             self.display.fill(self.BLACK)
-            self.draw_text('Thanks for Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
+            pygame.draw.polygon(self.display, (255, 255, 255) , ((0, 600), (200, 750), (0, 750)))
+            pygame.draw.polygon(self.display, (255, 255, 255) , ((600, 600), (400, 750), (600, 750)))
+            #self.draw_text('Thanks for Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
