@@ -30,7 +30,7 @@ class MainMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(self.game.BLACK)
+            self.game.display.fill('black')
             self.game.draw_text('Main Menu', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 350)
             self.game.draw_text("Start Game", 30, self.startx, self.starty)
             self.game.draw_text("Options", 20, self.optionsx, self.optionsy)
@@ -118,7 +118,7 @@ class CreditsMenu(Menu):
             if self.game.START_KEY or self.game.BACK_KEY:
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
-            self.game.display.fill(self.game.BLACK)
+            self.game.display.fill('black')
             self.game.draw_text('Credits', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
             self.game.draw_text('Made by Michael and Finn', 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
             self.blit_screen()
