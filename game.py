@@ -10,7 +10,7 @@ class Game():
         self.DISPLAY_W, self.DISPLAY_H =600, 800
         self.display = pygame.Surface((self.DISPLAY_W,self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W,self.DISPLAY_H)))
-        
+        pygame.display.set_caption("Pinnball")
         self.font_name = pygame.font.get_default_font()
         self.BLACK, self.WHITE = (50, 50, 50), (255, 255, 255)
         self.main_menu = MainMenu(self)
