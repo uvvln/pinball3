@@ -2,17 +2,18 @@ import pygame
 from menu import *
 from vector import *
 from ball import Ball
+import shape_setups
+from shapes import *
 
 
 class Game():
-    def __init__(self):
+    def __init__(self, shape_setup):
         pygame.init()
+        self.create_Game(shape_setup)
         self.running, self.playing = True, False
         self.UP_KEY, self.DOWN_KEY, self.RIGHT_KEY, self.RIGHT_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False, False, False
-        self.DISPLAY_W, self.DISPLAY_H =600, 750
         self.display = pygame.Surface((self.DISPLAY_W,self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W,self.DISPLAY_H)))
-        self.balls = []
         pygame.display.set_caption("Scuffed Pinball")
         self.font_name = pygame.font.get_default_font()
         self.main_menu = MainMenu(self)
@@ -20,14 +21,9 @@ class Game():
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
         self.clock = pygame.time.Clock()
+        
 
     def game_loop(self):
-
-        center = Vector(500, 0)
-        velo = Vector(0,0)
-        radius = 20
-        ball = Ball(center, velo, radius)
-        self.balls.append(ball)
 
         while self.playing:
             
@@ -38,7 +34,31 @@ class Game():
             pygame.display.update()
             self.reset_keys()
 
+    def create_Game(self, setup):
+        self.DISPLAY_W = setup['size']['width']
+        self.DISPLAY_H = setup['size']['height']
 
+        walls = shapes_from_rectangle(1, 1, self.DISPLAY_W - 2, self.DISPLAY_H - 2, 'green')
+
+        # create a list with all obstacles in the game (walls and other shapes)
+        self.shapes = walls
+        for obstacle in setup['obstacles']:
+            self.shapes.append(Shape(
+                            Vector(*obstacle['from']),
+                            Vector(*obstacle['to']),
+                            'green'
+                            )
+            )
+        
+        # TODO: paddles
+            
+        # create Ball
+        self.balls = [Ball(
+            Vector(*setup['ball']['position']),
+            Vector(*setup['ball']['velocity']),
+            setup['ball']['radius'],
+            setup['ball']['color']
+            )]
 
     def check_events(self):
         for event in pygame.event.get():
@@ -58,6 +78,7 @@ class Game():
                     self.RIGHT_KEY = True
                 if event.key == pygame.K_LEFT:
                     self.LEFT_KEY = True
+                    
 
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
@@ -73,15 +94,9 @@ class Game():
         self.window.blit(self.display, (0,0))   #switch surface
         self.display.fill('black')
 
-        #for segment in self.segments:
-           # segment.draw(self.screen)
-
-        #self.left_finger.draw(self.screen)
-        #self.right_finger.draw(self.screen)
-
-        pygame.draw.polygon(self.display, (255, 255, 255) , ((0, 600), (200, 750), (0, 750)))
-        pygame.draw.polygon(self.display, (255, 255, 255) , ((600, 600), (400, 750), (600, 750)))
-
+        for shape in self.shapes:
+            shape.draw(self.display)
+        
         for ball in self.balls:
             ball.draw(self.display)
 
@@ -92,5 +107,8 @@ class Game():
         if self.BACK_KEY:       #solange kein andere art das game zu beenden existiert
                 self.playing= False
         
+        #for shape in self.shapes:       # später: auch andere shapes können geschwindigkeit haben -> müssen auch geupdated werden
         for ball in self.balls:
             ball.update_position()
+            ball.collides_with(self.shapes)
+
